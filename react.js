@@ -108,3 +108,26 @@ async function fetchZoteroCollection(groupId, itemKey) {
     attachments: item.links?.attachment?.href
   };
 }
+// zenodo-integration.js
+async function fetchZenodoRecord(doi) {
+  // Zenodo DOIs often follow: 10.5281/zenodo.XXXXXX
+  const recordId = doi.match(/zenodo\.(\d+)/)?.[1];
+  if (!recordId) return null;
+  
+  const response = await fetch(`https://zenodo.org/api/records/${recordId}`);
+  if (!response.ok) return null;
+  
+  const record = await response.json();
+  return {
+    title: record.metadata.title,
+    creators: record.metadata.creators.map(c => c.name),
+    publication_date: record.metadata.publication_date,
+    description: record.metadata.description,
+    files: record.files?.map(f => ({
+      name: f.key,
+      size: f.size,
+      download: `https://zenodo.org/record/${recordId}/files/${f.key}`
+    })),
+    license: record.metadata.license?.id || record.metadata.rights
+  };
+}
