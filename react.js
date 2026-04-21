@@ -84,3 +84,27 @@ async function fetchFigshareItem(doi) {
     license: item.license?.name || 'Unknown'
   };
 }
+// zotero-integration.js
+async function fetchZoteroCollection(groupId, itemKey) {
+  // Requires Zotero API key with library access
+  const response = await fetch(
+    `https://api.zotero.org/groups/${groupId}/items/${itemKey}`,
+    {
+      headers: {
+        'Zotero-API-Version': '3',
+        'Authorization': `Bearer ${process.env.ZOTERO_API_KEY}`
+      }
+    }
+  );
+  
+  if (!response.ok) return null;
+  const item = await response.json();
+  
+  return {
+    title: item.data.title,
+    creators: item.data.creators?.map(c => `${c.lastName}, ${c.firstName}`),
+    abstract: item.data.abstractNote,
+    tags: item.data.tags?.map(t => t.tag) || [],
+    attachments: item.links?.attachment?.href
+  };
+}
