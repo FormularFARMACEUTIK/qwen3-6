@@ -1,0 +1,14 @@
+// In your ORCID callback handler, after session creation:
+if (req.session.user?.authenticated) {
+  const vc = await issueIPRCADCredential({
+    orcid: req.session.user.orcid,
+    role: 'participant', // or 'reviewer', 'speaker'
+    // ... other claims
+  });
+  
+  // Return VC to frontend for wallet storage
+  res.json({ 
+    success: true, 
+    verifiableCredential: vc 
+  });
+}
