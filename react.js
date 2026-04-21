@@ -61,3 +61,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+// figshare-integration.js
+async function fetchFigshareItem(doi) {
+  // Extract Figshare ID from DOI: 10.6084/m9.figshare.XXXXXXX
+  const figshareId = doi.match(/figshare\.(\d+)/)?.[1];
+  if (!figshareId) return null;
+  
+  const response = await fetch(`https://api.figshare.com/v2/articles/${figshareId}`, {
+    headers: { 'Authorization': `token ${process.env.FIGSHARE_TOKEN}` }
+  });
+  
+  if (!response.ok) return null;
+  const item = await response.json();
+  
+  return {
+    title: item.title,
+    authors: item.authors.map(a => `${a.last_name}, ${a.first_name}`),
+    published_date: item.published_date,
+    description: item.description,
+    video_url: item.files?.find(f => f.mime_type.startsWith('video/'))?.download_url,
+    poster_url: item.files?.find(f => f.mime_type.startsWith('image/'))?.download_url,
+    license: item.license?.name || 'Unknown'
+  };
+}
