@@ -21,3 +21,15 @@ curl -I "https://your-domain/auth/orcid/login"
 
 # Test callback (use ORCID sandbox)
 # Visit: https://sandbox.orcid.org/oauth/authorize?client_id=YOUR_ID&response_type=code&scope=/authenticate&redirect_uri=YOUR_CALLBACK
+# 1. Save the HTML as index.html
+# 2. Deploy to Vercel (free tier):
+npm i -g vercel
+vercel --prod
+
+# OR to Netlify:
+npm i -g netlify-cli
+netlify deploy --prod --dir=.
+
+# OR to Cloudflare Pages:
+npm i -g wrangler
+wrangler pages deploy . --project-name=ipr-cad
