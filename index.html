@@ -1457,3 +1457,59 @@ document.getElementById('orcidLoginBtn')?.addEventListener('click', function(e) 
   </script>
 </body>
 </html>
+<!-- Template for dynamic presentation card -->
+<template id="presentation-card-template">
+  <div class="card presentation-card">
+    <span class="presentation-type ${type}">${type.toUpperCase()}</span>
+    <div class="presentation-preview">
+      ${poster_url ? `<img src="${poster_url}" alt="Preview" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : 'Digital Preview'}
+    </div>
+    <h3>${title}</h3>
+    <p style="font-size: 0.95rem; margin: var(--space-2) 0;">${authors?.[0] || 'Author'}</p>
+    
+    <div class="metadata-grid">
+      <span class="metadata-label">DOI:</span>
+      <a href="https://doi.org/${doi}" class="metadata-value doi-link" target="_blank" rel="noopener">
+        ${doi}
+      </a>
+      
+      <span class="metadata-label">Repository:</span>
+      <span class="metadata-value">${repository}</span>
+      
+      <span class="metadata-label">Author ORCID:</span>
+      <a href="https://orcid.org/${orcid}" class="metadata-value" target="_blank" rel="noopener">
+        ${orcid}
+      </a>
+    </div>
+    
+    <button class="cite-btn">
+      <span>📋</span> Cite This
+    </button>
+  </div>
+</template>
+
+<script>
+// Fetch and render presentations from your backend API
+async function loadPresentations() {
+  const container = document.querySelector('#presentations .grid');
+  const template = document.getElementById('presentation-card-template');
+  
+  try {
+    // In production: fetch from your backend that aggregates repository APIs
+    const response = await fetch('/api/presentations?limit=6');
+    const presentations = await response.json();
+    
+    presentations.forEach(p => {
+      const card = template.content.cloneNode(true);
+      // Populate card with data (use DOM methods for security)
+      container.appendChild(card);
+    });
+  } catch (error) {
+    console.error('Failed to load presentations:', error);
+    // Fallback: keep static cards visible
+  }
+}
+
+// Load on page ready
+document.addEventListener('DOMContentLoaded', loadPresentations);
+</script>
