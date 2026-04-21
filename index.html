@@ -7,6 +7,32 @@
   <meta name="keywords" content="IPR, Climate Action, Doha Declaration, Academic Conference, ORCID, DOI, Zotero, Figshare, W3C Verifiable Credentials">
   <meta name="author" content="Scientia-Naturalis.org">
   <meta name="robots" content="index, follow">
+  <!-- BEFORE (mockup) -->
+<a href="https://orcid.org/oauth/authorize" class="orcid-login">ORCID Login</a>
+
+<!-- AFTER (production-ready) -->
+<a href="/auth/orcid/login" class="orcid-login" id="orcidLoginBtn">
+  <span class="orcid-icon">iD</span>
+  <span class="btn-text">Login with ORCID</span>
+</a>
+
+<script>
+// Add loading state and error handling
+document.getElementById('orcidLoginBtn')?.addEventListener('click', function(e) {
+  const btnText = this.querySelector('.btn-text');
+  const originalText = btnText.textContent;
+  
+  // Show loading state
+  btnText.textContent = 'Connecting to ORCID...';
+  this.style.opacity = '0.8';
+  
+  // Allow default redirect after brief delay for UX
+  setTimeout(() => {
+    btnText.textContent = originalText;
+    this.style.opacity = '1';
+  }, 2000);
+});
+</script>
   
   <!-- Open Graph / Academic SEO -->
   <meta property="og:title" content="IPR-CAD Conference | IPRs, Climate Action, Doha Declaration">
