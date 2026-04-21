@@ -1,0 +1,4 @@
+// Test in browser console:
+fetchDOIMetadata('10.5281/zenodo.1234567')
+  .then(console.log)
+  .catch(console.error);
